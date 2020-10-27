@@ -28,8 +28,6 @@ import (
 	"regexp"
 	"strings"
 
-	"sigs.k8s.io/kustomize/kyaml/fn/framework"
-
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"sigs.k8s.io/kustomize/kyaml/fn/framework"
 	k8syaml "sigs.k8s.io/yaml"
