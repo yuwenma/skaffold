@@ -304,7 +304,30 @@ func TestKpt_Dependencies(t *testing.T) {
 			},
 			expected: []string{"config/deployment.yaml", "kpt-fn/kpt-func.yaml"},
 		},
-
+		{
+			description: "bad fnpath outside of config is watched",
+			kpt: latest.KptDeploy{
+				Dir: "./config",
+				Fn:  latest.KptFn{FnPath: "./kpt-fn"},
+			},
+			createFiles: map[string]string{
+				"./config/deployment.yaml": "",
+				"./kpt-fn/kpt-func.yaml":   "bad json",
+			},
+			expected: []string{"config/deployment.yaml", "kpt-fn/kpt-func.yaml"},
+		},
+		{
+			description: "bad fnpath inside of config is watched",
+			kpt: latest.KptDeploy{
+				Dir: "./config",
+				Fn:  latest.KptFn{FnPath: "./config/kpt-fn"},
+			},
+			createFiles: map[string]string{
+				"./config/deployment.yaml":      "",
+				"./config/kpt-fn/kpt-func.yaml": "bad json",
+			},
+			expected: []string{"config/deployment.yaml", "config/kpt-fn/kpt-func.yaml"},
+		},
 		{
 			description: "fnpath and dir and kustomization",
 			kpt: latest.KptDeploy{

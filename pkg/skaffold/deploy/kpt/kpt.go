@@ -314,6 +314,9 @@ func (k *Deployer) getKptFunc(buf []byte) ([]byte, error) {
 			return nil, fmt.Errorf("reading Item %w", err)
 		}
 		var obj unstructured.Unstructured
+		// It is safe to ignore the YAMTLToJSON and UmarshalJSON errors since it is very possible
+		// the Items may include non k8s resource. In such case, we rely on kpt to raise the
+		// error with more fine-grained error guidance.
 		jByte, err := k8syaml.YAMLToJSON([]byte(item))
 		if err != nil {
 			continue
@@ -479,7 +482,7 @@ func (k *Deployer) getKptFnRunArgs() ([]string, error) {
 	}
 
 	count := 0
-	// fn-path is not supported due to kpt issue https://github.com/GoogleContainerTools/kpt/issues/1149
+	// kpt cannot support fn-path in pipeline mode: https://github.com/GoogleContainerTools/kpt/issues/1149
 	if len(k.Fn.FnPath) > 0 {
 		count++
 	}
